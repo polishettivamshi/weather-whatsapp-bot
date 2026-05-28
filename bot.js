@@ -182,6 +182,7 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
             backupSyncIntervalMs: 300000
         }),
         puppeteer: {
+            executablePath: '/usr/bin/chromium',
             headless: true,
             args: [
                 '--no-sandbox',

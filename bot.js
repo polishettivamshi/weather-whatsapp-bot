@@ -170,7 +170,7 @@ const startMorningJob = require('./scheduler/morningJob');
 const startEveningJob = require('./scheduler/eveningJob');
 const startAlertJob = require('./scheduler/alertJob');
 
-// Connect to MongoDB for session persistence
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log("✅ Connected to MongoDB");
 
@@ -178,7 +178,8 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
     const client = new Client({
         authStrategy: new MongoStore({ store: store }),
         puppeteer: {
-            executablePath: '/usr/bin/google-chrome',
+            // This path is mandatory for the Puppeteer Docker image
+            executablePath: '/usr/bin/google-chrome-stable',
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
         }
     });
@@ -191,14 +192,6 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
         startMorningJob(client);
         startEveningJob(client);
         startAlertJob(client);
-    });
-
-    client.on('group_join', async (notification) => {
-        for (const userId of notification.recipientIds) {
-            try {
-                await client.sendMessage(userId, "👋 Hello! I am your Weather Assistant. Send 'hi' to see the main options.");
-            } catch (err) { console.log(`DM failed: ${err.message}`); }
-        }
     });
 
     client.on('message', async message => {

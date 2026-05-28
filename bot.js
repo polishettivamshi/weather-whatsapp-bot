@@ -174,11 +174,11 @@ const startAlertJob = require('./scheduler/alertJob');
 mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log("✅ Connected to MongoDB");
 
+    // Initialize the store by passing the mongoose connection directly
     const store = new MongoStore({ mongoose: mongoose });
     const client = new Client({
-        authStrategy: new MongoStore({ store: store }),
+        authStrategy: store,
         puppeteer: {
-            // This path is mandatory for the Puppeteer Docker image
             executablePath: '/usr/bin/google-chrome-stable',
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
         }

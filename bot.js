@@ -158,7 +158,7 @@
 // client.initialize();
 
 
-const { Client } = require('whatsapp-web.js');
+const { Client, RemoteAuth } = require('whatsapp-web.js');
 const { MongoStore } = require('wwebjs-mongo');
 const mongoose = require('mongoose');
 const qrcode = require('qrcode-terminal');
@@ -174,10 +174,14 @@ const startAlertJob = require('./scheduler/alertJob');
 mongoose.connect(process.env.MONGODB_URI).then(() => {
     console.log("✅ Connected to MongoDB");
 
-    // Initialize the store by passing the mongoose connection directly
     const store = new MongoStore({ mongoose: mongoose });
+
     const client = new Client({
-        authStrategy: store,
+        // Use RemoteAuth instead of passing store directly
+        authStrategy: new RemoteAuth({
+            store: store,
+            backupSyncIntervalMs: 300000 // Syncs session to MongoDB every 5 minutes
+        }),
         puppeteer: {
             executablePath: '/usr/bin/google-chrome-stable',
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']

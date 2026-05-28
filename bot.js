@@ -177,14 +177,17 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
     const store = new MongoStore({ mongoose: mongoose });
 
     const client = new Client({
-        // Use RemoteAuth instead of passing store directly
         authStrategy: new RemoteAuth({
             store: store,
-            backupSyncIntervalMs: 300000 // Syncs session to MongoDB every 5 minutes
+            backupSyncIntervalMs: 300000
         }),
         puppeteer: {
-            // executablePath: '/usr/bin/google-chrome-stable',
-            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+            headless: true,
+            args: [
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage'
+            ]
         }
     });
 

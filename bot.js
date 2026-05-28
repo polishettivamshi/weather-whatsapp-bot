@@ -183,7 +183,7 @@ mongoose.connect(process.env.MONGODB_URI).then(() => {
             backupSyncIntervalMs: 300000 // Syncs session to MongoDB every 5 minutes
         }),
         puppeteer: {
-            executablePath: '/usr/bin/google-chrome-stable',
+            // executablePath: '/usr/bin/google-chrome-stable',
             args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
         }
     });
